@@ -1,41 +1,57 @@
-# List of questions
-questions = ["What is the capital of Belgium? ",
-             "What is the capital of France? ",
-             "What is the capital of Germany? ",
-             "What is the capital of England? "]
-# Associated good answers
-answers = ["C",
-           "A",
-           "A",
-           "D"]
-# Associated options
-options = [["A. Mons", "B. Bruges", "C. Brussels", "D. Liege"],
-           ["A. Paris", "B. Bordeaux", "C. Lille", "D. Marseille"],
-           ["A. Berlin", "B. Munich", "C. Hamburg", "D. Cologne"],
-           ["A. Liverpool", "B. Manchester", "C. Oxford", "D. London"]]
+class Question:
+    def __init__(self, label, answer, option):
+        self.label = label
+        self.answer = answer
+        self.option = option
 
-score = 0
-u_answers = []
-for i in range(0, len(questions)):  # Loop for the length of the questions list
-    print(f"\n{i+1}. {questions[i]}")
-    for j in range(0, len(options[i])):  # Loop for the length of the options[i] list
-        print("\t", options[i][j])
-    u_answers.append(input("\nAnswer: "))
-    u_answers[i] = u_answers[i].upper()
-    if u_answers[i] == answers[i]:  # Compares user answer with good answers list
-        print("Correct!")
-        score += 1
-    else:
-        print("Wrong answer!")
+    def ask(self):
+        print(self.label)
+        for i in range(len(self.option)):
+            print("\t", self.option[i])
 
-print("\n---------- Review ----------")
-print("Here are your answers:", u_answers, "\n")  # Display user's answers
+        print()
+        result = False
+        response = Question.ask_response(1, len(self.option))
+        if self.option[response-1].lower() == self.answer.lower():
+            print("Correct!")
+            result = True
+        else:
+            print("Wrong answer!")
 
-for i in range(0, len(questions)):  # Loop for the length of the questions list
-    print(f"Question {i+1}: {u_answers[i]}")
-    if u_answers[i] != answers[i]:  # Compares user answer with good answers list
-        print(f"The good answer was: {answers[i]}")
+        return result
 
-print(f"\nHere's your score: {score}/{len(questions)}")  # Displays the score
+    def ask_response(min, max):
+        response_str = input(f"\nAnswer (between {min} & {max}): ")
+        try:
+            response = int(response_str)
+            if min <= response <= max:
+                return response
+
+            print(f"Please enter a number between {min} & {max})")
+        except:
+            print("Only numbers are allowed")
+        return Question.ask_response(min, max)
+
+class Questionnaire:
+    def __init__(self, questions):
+        self.questions = questions
+
+    def exec(self):
+        print("\n---------- Review ----------")
+        score = 0
+        for question in self.questions:  # Loop for the length of the questions list
+            if question.ask():  # Compares user answer with good answers list
+                score += 1
+
+        print(f"\nHere's your score: {score}/{len(self.questions)}")
+        return score
 
 
+Questionnaire(
+    (
+        Question("What is the capital of Belgium? ", "Brussels", ("Mons", "Bruges", "Brussels", "Liege")),
+        Question("What is the capital of France? ", "Paris", ("Paris", "Bordeaux", "Lille", "Marseille")),
+        Question("What is the capital of Germany? ", "Berlin", ("Berlin", "Munich", "Hamburg", "Cologne")),
+        Question("What is the capital of England? ", "London", ("Liverpool", "Manchester", "Oxford", "London"))
+    )
+).exec()
