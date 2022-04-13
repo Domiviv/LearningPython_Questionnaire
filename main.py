@@ -39,8 +39,8 @@ class Questionnaire:
     def exec(self):
         print("\n---------- Review ----------")
         score = 0
-        for question in self.questions:  # Loop for the length of the questions list
-            if question.ask():  # Compares user answer with good answers list
+        for question in self.questions:
+            if question.ask():
                 score += 1
 
         print(f"\nHere's your score: {score}/{len(self.questions)}")
